@@ -1,7 +1,7 @@
 <template>
 	<view class="xihuan">
 		<view class="xihuan-title">
-			<image src="../../static/img/components/xihuan.png"></image>
+			<image src="../../../static/img/components/xihuan.png"></image>
 		</view>
 		<view class="xihuan-list">
 			<view class="xihuan-list-item" v-for="(item,index) in itemData" :key="index">

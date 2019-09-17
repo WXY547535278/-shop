@@ -44,17 +44,17 @@
 		data() {
 			return {
 				phone: "",
-				regist: {
-					url: 'userRegister',
+				phoneLogin: {
+					url: 'unifiedPhoneLogin',
 					method: 'post'
 				},
 				verification: {
-					url: 'unifiedPhoneLogin',
+					url: 'sendVerifyCode',
 					method: 'post'
 				},
 				verificationData: {
 					"phone": this.phone,
-					"type": "1"
+					"type": "2"
 				},
 				verificationTxt: '获取验证码'
 			}
@@ -84,7 +84,7 @@
 				e.detail.value.login_type = "0"
 				console.log(e.detail.value)
 				console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
-				http.httpRequest(this.regist, JSON.stringify(e.detail.value)).then(res => {
+				http.httpRequest(this.phoneLogin, JSON.stringify(e.detail.value)).then(res => {
 					console.log(res);
 					if (res.data.code == 500) {
 						uni.showToast({
@@ -94,16 +94,25 @@
 						})
 					}
 					if (res.data.code == 200) {
+						console.log("短信登录成功返回的token数据");
+						console.log(res.data.data.token)
+						uni.setStorage({
+							key: 'token',
+							data: res.data.data.token,
+							success: function() {
+								console.log(success);
+							}
+						})
 						uni.showToast({
-							title: '注册成功！',
+							title: '登录成功！',
 							icon: 'success',
 							duration: 2000,
 							success: function() {
 								console.log('haha');
 								setTimeout(function() {
 									//要延时执行的代码
-									uni.navigateTo({
-										url: '../login/zhanghao'
+									uni.switchTab({
+										url: '../tabbar/tabbar-1/tabbar-1'
 									})
 								}, 2000) //延迟时间
 							}

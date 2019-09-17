@@ -69,16 +69,27 @@
 						})
 					}
 					if (res.data.code == 200) {
+						console.log("账号登录成功返回的token数据");
+						console.log(res.data.data.token)
+						console.log(res.data.data.employeeInfo.login_id)
+						// 设置状态管理器中的login_id
+						this.$store.commit('swapId',res.data.data.employeeInfo.login_id)
+						uni.setStorage({
+							key: 'token',
+							data: res.data.data.token,
+							success: function() {
+								console.log('success')
+							}
+						})
 						uni.showToast({
 							title: '登录成功！',
 							icon: 'success',
 							duration: 1000,
 							success: function() {
-								console.log('haha');
 								setTimeout(function() {
 									//要延时执行的代码
-									uni.navigateTo({
-										url: 'duanxin'
+									uni.switchTab({
+										url: '../tabbar/tabbar-1/tabbar-1'
 									})
 								}, 2000) //延迟时间
 							}

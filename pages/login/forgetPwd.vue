@@ -20,14 +20,15 @@
 						<view class="yanZhengMa" @click="getYanZhengMa">{{verificationTxt}}</view>
 					</view>
 					<view class="input-item">
-						<view class="input_name"><text>密码:</text></view>
-						<input confirmtype="text" name="password" autocomplete="off" password placeholder="请输入密码" required/>
+						<view class="input_name">密码:</view>
+						<input confirmtype="text" name="password" autocomplete="off" password placeholder="请输入新密码" required/>
 					</view>
 					<view class="link">
-						<navigator class="left" url="../register/register">注册</navigator><navigator class="right" url="zhanghao">密码登录</navigator>
+						<navigator class="left" url="../register/register">注册</navigator>
+						<navigator class="right" url="../login/duanxin">密码登录</navigator>
 					</view>
 				</view> 
-				<button form-type="submit" class="submit-button">登 录</button>
+				<button form-type="submit" class="submit-button">修 改</button>
 				<view class="line">
 					<text class="line-left"></text>
 					<text class="line-text">OR</text>
@@ -96,7 +97,7 @@
 					}
 					if (res.data.code == 200) {
 						uni.showToast({
-							title: '注册成功！',
+							title: '修改成功！',
 							icon: 'success',
 							duration: 2000,
 							success: function() {
@@ -248,7 +249,7 @@
 					font-size: 34rpx;
 					position: absolute;
 					left: 44rpx;
-					top: 350rpx;
+					top: 370rpx;
 				}
 				.line {
 					position: absolute;

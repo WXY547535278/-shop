@@ -52,18 +52,12 @@ const httpTokenRequest = (opts, data) => {
 	let httpDefaultOpts = {
 		url: baseUrl + opts.url,
 		data: data,
-		method: opts.method
-		// header: opts.method == 'get' ? {
-		// 	'Token': token,
-		// 	'X-Requested-With': 'XMLHttpRequest',
-		// 	"Accept": "application/json",
-		// 	"Content-Type": "application/json; charset=UTF-8"
-		// } : {
-		// 	'Token': token,
-		// 	'X-Requested-With': 'XMLHttpRequest',
-		// 	'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-		// },
-		// dataType: 'json',
+		method: opts.method,
+		header: {
+			'user-token': token,
+			'time': Math.round(new Date() / 1000)
+		},
+		dataType: 'json',
 	}
 	let promise = new Promise(function(resolve, reject) {
 		uni.request(httpDefaultOpts).then(

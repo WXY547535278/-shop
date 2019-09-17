@@ -2,6 +2,20 @@
 	"pages": [
 		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/login/zhanghao",
+		    "style" : {}
+		},
+		{
+		    "path" : "pages/tabbar/tabbar-4/chat",
+		    "style" : {}
+		},
+		{
+			"path": "pages/tabbar/tabbar-4/tabbar-4",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
 		    "path" : "pages/login/forgetPwd",
 		    "style" : {}
 		},
@@ -40,12 +54,6 @@
 			}
 		},
 		{
-			"path": "pages/tabbar/tabbar-4/tabbar-4",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		},
-		{
 			"path": "pages/tabbar/tabbar-2/dingdanXiangqing",
 			"style": {
 				"navigationBarTitleText": "uni-app"
@@ -57,10 +65,6 @@
         },
 		{
 		    "path" : "pages/login/duanxin",
-		    "style" : {}
-		},
-		{
-		    "path" : "pages/login/zhanghao",
 		    "style" : {}
 		}
     ],
