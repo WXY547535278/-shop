@@ -19,8 +19,8 @@
 						<input confirmtype="text" name="password" autocomplete="off" password placeholder="请输入密码" required/>
 					</view>
 					<view class="link">
-						<navigator class="left" url="../register/register">注册</navigator>
-						<navigator class="right" url="duanxin">短信登录</navigator>
+						<navigator class="left" url="/pages/register/register">注册</navigator>
+						<navigator class="right" url="/pages/login/duanxin">短信登录</navigator>
 					</view>
 				</view> 
 				<button form-type="submit" class="submit-button">登 录</button>

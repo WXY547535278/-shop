@@ -8,72 +8,29 @@
 			</view>
 		</my-header>
 		<view class="boxes">
-			<navigator url="transactionDetail" class="header-back">
+			<navigator url="transactionDetail" class="header-back"  v-for="(item,index) in items" :key="index">
 				<view class="box">
 					<view class="box_top">
 						<view class="box_top_left">
-							<text>您的订单正在派送中</text>
+							<text>{{item.title}}</text>
 						</view>
 						<view class="box_top_right">
-							<text>星期五</text>
+							<text>{{item.time}}</text>
 						</view>
 					</view>
 					<view class="box_center">
 						<image src="../../../static/img/tabbar/pic.png" mode="" style="z-index: 100;"></image>
 						<view class="box_center_right">
 							<view class="box_center_right_top">
-								<text>您购买的低组装,四方型滑块TRS30BS【三环】低组装,四 方型...订单已签收！</text>
+								<text>{{item.content}}</text>
 							</view>
 							<view class="box_center_right_bottom">
-								<text>来自527435137149178047</text>
+								<text>{{item.order_id}}</text>
 							</view>
 						</view>
 					</view>
 				</view>
 			</navigator>
-			<view class="box">
-
-				<view class="box_top">
-					<view class="box_top_left">
-						<text>您的订单正在派送中</text>
-					</view>
-					<view class="box_top_right">
-						<text>星期五</text>
-					</view>
-				</view>
-				<view class="box_center">
-					<image src="../../../static/img/tabbar/pic.png" mode="" style="z-index: 100;"></image>
-					<view class="box_center_right">
-						<view class="box_center_right_top">
-							<text>您购买的低组装,四方型滑块TRS30BS【三环】低组装,四 方型...订单已签收！</text>
-						</view>
-						<view class="box_center_right_bottom">
-							<text>来自527435137149178047</text>
-						</view>
-					</view>
-				</view>
-			</view>
-			<view class="box">
-				<view class="box_top">
-					<view class="box_top_left">
-						<text>您的订单正在派送中</text>
-					</view>
-					<view class="box_top_right">
-						<text>星期五</text>
-					</view>
-				</view>
-				<view class="box_center">
-					<image src="../../../static/img/tabbar/pic.png" mode="" style="z-index: 100;"></image>
-					<view class="box_center_right">
-						<view class="box_center_right_top">
-							<text>您购买的低组装,四方型滑块TRS30BS【三环】低组装,四 方型...订单已签收！</text>
-						</view>
-						<view class="box_center_right_bottom">
-							<text>来自527435137149178047</text>
-						</view>
-					</view>
-				</view>
-			</view>
 		</view>
 	</view>
 </template>
@@ -84,12 +41,83 @@
 	export default {
 		data() {
 			return {
-
+				page: 1,
+				size: 4,
+				hasMoreData: true ,//上拉时是否继续请求数据，即是否还有更多数据
+				items: []
 			};
 		},
 		components: {
 			MyHeader
-		}
+		},
+		methods: {
+			// 获取我的订单
+			getTc: function(message) {
+				uni.showNavigationBarLoading() //在当前页面显示导航条加载动画
+				uni.showLoading({ //显示 loading 提示框
+					title: message,
+				})
+				http.httpTokenRequest({
+					// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status + '&page=' + this.page + '&size=' + this.size,
+					url: 'getDealLog?login_id=1027&page=' + this.page + '&size=' + this.size,
+					method: 'get'
+				}, {}).then(res => {
+					console.log(res)
+					var allTc = this.items
+					if (res.data.code == 200) {
+						if (res.data.data.length >= 0) {
+							uni.hideNavigationBarLoading()
+							uni.hideLoading()
+							if (this.page == 1) {
+								allTc = []
+							}
+							var alltc = res.data.data
+							console.log("下一頁加載出來的數據", alltc)
+							if (alltc.length < this.size) {
+								this.items = allTc.concat(alltc)
+								this.hasMoreData = false
+							} else {
+								this.items = allTc.concat(alltc)
+								this.hasMoreData = true
+								this.page++
+								console.log(this.items)
+							}
+						}
+					}
+				}, error => {
+					console.log(error);
+				})
+			}
+		},
+	
+	    /**
+	     * 页面相关事件处理函数--监听用户下拉动作
+	     */
+	    onLoad: function() {
+	    	// 获取订单列表
+	    	this.getTc('正在加载数据...')
+	    },
+	    onPullDownRefresh: function() {
+	    	console.log("下拉")
+	    	this.page = 1
+	    	this.getTc('正在刷新数据')
+	    },
+	    
+	    /**
+	     * 页面上拉触底事件的处理函数
+	     */
+	    onReachBottom: function() {
+	    	console.log("上拉" + this.hasMoreData)
+	    	console.log("當前頁面",this.page)
+	    	if (this.hasMoreData) {
+	    		this.getTc('加载更多数据')
+	    	} else {
+	    		uni.showToast({
+	    			title: '没有更多数据',
+	    			icon:"none"
+	    		})
+	    	}
+	    }  
 	}
 </script>
 

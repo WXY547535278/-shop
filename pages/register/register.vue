@@ -45,7 +45,7 @@
 						<view class="yanZhengMa" @click="getYanZhengMa">{{verificationTxt}}</view>
 					</view>
 					<view class="link">
-						<navigator class="left" url="../login/duanxin">登录</navigator>
+						<navigator class="left" url="/pages/login/duanxin">登录</navigator>
 					</view>
 				</view>
 				<button form-type="submit" class="submit-button">注 册</button>

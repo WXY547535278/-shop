@@ -29,7 +29,7 @@
 
 		<view class="dingdan">
 			<view class="dingdan-item" v-for="(item,index) in items" :key="index">
-				<text class="zhuangtai">{{status}}</text>
+				<text class="zhuangtai">{{statu}}</text>
 				<!-- 				<navigator url="'./dingdanXiangqing?orderId='+item.order_id" hover-class="navigator-hover" open-type="navigate"> -->
 				<view class="xiangqing" @click="toDeatil(item.order_id)">
 					<image src="../../../static/img/tabbar/pic.png"></image>
@@ -91,14 +91,10 @@
 				//保存当前导航激活项的索引值
 				navItemID: '0',
 				status: '',
-				order: {
-					// + this.$store.state.login_id
-					url: 'getMyOrder?login_id=' + this.$store.state.login_id + '&status=' + status,
-					method: 'get'
-				},
+				statu: '',
 				page: 1,
 				size: 4,
-				hasMoreData: null
+				hasMoreData: true//上拉时是否继续请求数据，即是否还有更多数据
 			}
 		},
 		components: {
@@ -183,10 +179,11 @@
 					title: message,
 				})
 				http.httpTokenRequest({
-					// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status,
+					// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status + '&page=' + this.page + '&size=' + this.size,
 					url: 'getMyOrder?login_id=1027&status=' + this.status + '&page=' + this.page + '&size=' + this.size,
 					method: 'get'
 				}, {}).then(res => {
+					console.log(res)
 					var allOrder = this.items
 					if (res.data.code == 200) {
 						if (res.data.data.length >= 0) {
@@ -196,6 +193,7 @@
 								allOrder = []
 							}
 							var allorder = res.data.data
+							console.log("下一頁加載出來的數據",allorder)
 							if (allorder.length < this.size) {
 								this.items = allOrder.concat(allorder)
 								this.hasMoreData = false
@@ -211,15 +209,15 @@
 							this.product_list.push(res.data.data[i].product_list[0])
 						}
 						if (this.status == 0) {
-							this.status = '全部'
+							this.statu = '全部'
 						} else if (this.status == 1) {
-							this.status = '待付款'
+							this.statu = '待付款'
 						} else if (this.status == 2) {
-							this.status = '待发货'
+							this.statu = '待发货'
 						} else if (this.status == 3) {
-							this.status = '待收货'
+							this.statu = '待收货'
 						} else if (this.status == 4) {
-							this.status = '待评价'
+							this.statu = '待评价'
 						}
 						console.log("获取到的订单", res.data.data);
 						console.log("获取到的订单列表", this.product_list);
@@ -230,8 +228,7 @@
 			}
 		},
 		created() {
-			// 获取订单列表
-			this.getOrder()
+			
 			// 定义一个数组保存各类数据的索引
 			this.arr2 = [allItems, daifukuan, daifahuo, daishouhuo, daipingjia];
 			//初始化订单数据
@@ -241,9 +238,13 @@
 		/**
 		 * 页面相关事件处理函数--监听用户下拉动作
 		 */
+		onLoad: function() {
+			// 获取订单列表
+			this.getOrder('正在加载数据...')
+		},
 		onPullDownRefresh: function() {
 			console.log("下拉")
-			this.page = 0
+			this.page = 1
 			this.getOrder('正在刷新数据')
 		},
 
