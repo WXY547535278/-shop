@@ -11,7 +11,7 @@
 			<view class="content" id="content" :style="{height:style.contentViewHeight+'px'}">
 				<scroll-view id="scrollview" scroll-y="true" :style="{height:style.contentViewHeight+'px'}" :scroll-with-animation="true"
 				 :scroll-top="scrollTop">
-					<message-show v-for="(message,index) in messages" :key="index" v-bind:message="message" :id="index"></message-show>
+					<message-show v-for="(message,index) in messages" :key="index" v-bind:message="replaceFace(message)" :id="index"></message-show>
 					<view id="bottom"></view>
 				</scroll-view>
 			</view>
@@ -38,22 +38,31 @@
 				},
 				scrollTop: 0,
 				// 一开始展示的数据
+				content: '',
 				messages: [{
 					user: 'home',
-					content: '你好'
+					content: '[累]'
 				}, {
+					user: 'home',
+					content: '你好！'
+				},{
 					user: 'customer',
-					type: 'head', //input,content 
 					content: '我很好'
 				}],
 				message: [],
 				ws: new WebSocket("ws://47.92.147.48:10086"),
-				my_uid: 1027,
 				token: '',
+				//获取聊天记录
 				chat: {
-					url: 'getWechatMessageByService?login_id='+ this.$store.state.login_id+'&employess_id=505',
+					url: 'getWechatMessageByService?login_id=' + this.$store.state.login_id + '&employess_id=505',
 					method: 'get'
-				}
+				},
+				// 过滤聊天内容
+				illegalText: {
+					url: 'illegalTextTest',
+					method: 'post'
+				},
+				EXPS: []
 			};
 		},
 		components: {
@@ -63,44 +72,64 @@
 		},
 		mounted() {
 			this.getChatMessage()
+			this.loadEmojiData()
 		},
-		// updated() {
-		// 	this.getChatMessage()
-		// },
 		created: function() {
-			
 			//设置状态管理器中的值
 			// this.$store.commit('swapId','1112313')
 			// 打印状态管理器中的值
 			console.log("从状态管理器中取出的login_id")
 			console.log(this.$store.state.login_id);
 			var that = this
-			// uni.getStorage({
-			// 	key: 'token',
-			// 	success: function (res) {
-			// 		that.token = res.data
-			// 		console.log('获取用户登录token')
-			// 		console.log(that.token)
-			// 	}
-			// })
 			this.WebSocketTest()
 			const res = uni.getSystemInfoSync();
 			this.style.pageHeight = res.windowHeight;
 			this.style.contentViewHeight = res.windowHeight - uni.getSystemInfoSync().screenWidth / 750 * (100); //像素
 		},
 		methods: {
-			getInputMessage: function(message) { //获取子组件的输入数据
-			    var that = this
-				var data = {
-					'type': 'text',
-					'from_id': that.my_uid,
-					'to_id': 505,
-					'content': message.content
+			// 获取聊天表情
+			loadEmojiData: function() {
+				uni.request({
+					url: '../../../static/emojiDB.json',
+					method: 'get'
+				}).then(res => {
+					var json = eval('(' + res[1].data + ')')
+					this.EXPS = json.EXPS.slice(0)
+				})
+			},
+			// 输入框
+			replaceFace: function(con) {
+				if (!con) {
+					return;
 				}
-				that.ws.send(JSON.stringify(data))
+				if (con.content.toString().indexOf('[') > -1) {
+					var exps = this.EXPS;
+					for (var i = 0; i < exps.length; i++) {
+						// 交换title为file
+						con.content = con.content.replace('['+exps[i].title+']', '<image src="' + exps[i].file + '"  alt=""></image>');
+					}
+				}
+				return con;
+			},
+			getInputMessage: function(message) { //获取子组件的输入数据
+				var that = this
+				http.httpTokenRequest(that.illegalText, {
+						"text": message.content
+					})
+					.then(res => {
+						console.log('过滤成功成功返回的消息', res.data)
+						var data = {
+							'type': 'text',
+							'from_id': this.$store.state.login_id,
+							'to_id': 505,
+							'content': res.data.data
+						}
+						console.log("过滤后的消息", data)
+						that.ws.send(JSON.stringify(data))
+					})
 				console.log("获取输入框输入的消息：")
 				console.log(message)
-				this.addMessage('customer', message.content, false);
+				this.addMessage('customer', message.content)
 				// this.toRobot(message.content);
 			},
 			addMessage: function(user, content) {
@@ -116,20 +145,17 @@
 				var query = uni.createSelectorQuery();
 				query.selectAll('.m-item').boundingClientRect();
 				query.select('#scrollview').boundingClientRect();
-
 				query.exec(function(res) {
 					that.style.mitemHeight = 0;
 					res[0].forEach(function(rect) {
 						// console.info(rect.height);
 						that.style.mitemHeight = that.style.mitemHeight + rect.height + 20;
 					});
-
 					if (that.style.mitemHeight > that.style.contentViewHeight) {
 						that.scrollTop = that.style.mitemHeight - that.style.contentViewHeight;
 					}
 				});
 			},
-
 			// 连接WebSocketTest服务器
 			WebSocketTest: function() {
 				var that = this
@@ -139,40 +165,36 @@
 				// 连接成功的回调
 				that.ws.onopen = function() {
 					// Web Socket 已连接上，使用 send() 方法发送数据
-
 					console.log('连接成功, 发送自己的标识')
 					var logo = {
 						'type': 'login',
 						'from_id': that.my_uid
 					}
 					that.ws.send(JSON.stringify(logo))
-
 				};
 				// 发送的数据成功 的回调
 				that.ws.onmessage = function(evt) {
 					var received_msg = evt.data;
 					console.log('接收到的消息', received_msg)
 				};
-
 				that.ws.onclose = function(e) {
 					// 关闭 websocket
 					console.log('连接关闭', e)
 				};
 			},
-			
 			getChatMessage: function() {
-				http.httpTokenRequest(this.chat,{}).then(res => {
+				http.httpTokenRequest(this.chat, {}).then(res => {
 					console.log(res.data);
 					if (res.data.code == 200) {
 						this.message = res.data.data
 						console.log(this.message);
-						for(var i = 0; i<this.message.length; i++) {
-							if(this.message[i].from_id==this.$store.state.login_id) {
+						for (var i = 0; i < this.message.length; i++) {
+							if (this.message[i].from_id == this.$store.state.login_id) {
 								this.messages.push({
 									user: 'customer',
 									content: this.message[i].content
 								})
-							}else {
+							} else {
 								this.messages.push({
 									user: 'home',
 									content: this.message[i].content
@@ -184,32 +206,6 @@
 					console.log(error);
 				})
 			}
-		
-		// toRobot: function(info) {
-			// this.addMessage('home', info, false);
-			// var apiUrl = 'http://www.tuling123.com/openapi/api';
-			// uni.request({
-			// 	url: apiUrl,
-			// 	data: {
-			// 		"key": 'acfbca724ea1b5db96d2eef88ce677dc',
-			// 		"info": info,
-			// 		"userid": 'uni-test'
-			// 	},
-			// 	success: (res) => {
-			// 		console.log(res)
-			// 		this.addMessage('home', res.data.text, false);
-			// 		this.scrollToBottom();
-			// 		console.log('request success:' + res.data.text);
-			// 	},
-			// 	fail: (err) => {
-			// 		console.log('request fail', err);
-			// 		uni.showModal({
-			// 			content: err.errMsg,
-			// 			showCancel: false
-			// 		})
-			// 	}
-			// });
-		// },
 		}
 	}
 </script>
@@ -225,11 +221,9 @@
 	}
 
 	.content {
-
 		display: flex;
 		flex: 1;
 		margin-bottom: 100px;
-
 	}
 
 	.foot {
@@ -240,5 +234,46 @@
 		left: 0px;
 		bottom: 0px;
 		overflow: hidden;
+	}
+
+	.foot .expression {
+		width: 96%;
+		height: 300rpx;
+		border: solid 2rpx #bbb;
+		background-color: #FFFFFF;
+		position: fixed;
+		bottom: 90rpx;
+		left: 14rpx;
+		z-index: 10000;
+
+		.xw-faceEmoji {
+			width: 80rpx;
+			height: 80rpx;
+			display: inline-block;
+			margin-top: 10rpx;
+
+			image {
+				width: 60rpx;
+				height: 60rpx;
+			}
+		}
+	}
+
+	.slide-fade-enter-active {
+		transition: all 0.3s ease;
+	}
+
+	.slide-fade-leave-active {
+		transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+	}
+
+	.slide-fade-enter {
+		transform: translateY(-10rpx);
+		opacity: 0;
+	}
+
+	.slide-fade-leave-to {
+		transform: translateY(10rpx);
+		opacity: 0;
 	}
 </style>

@@ -17,7 +17,7 @@ const store = new Vuex.Store({
 				img: 'static/img/tabbar/pic.png'
 			}
 		},
-		login_id: '123'
+		login_id: ''
 	},
 	mutations: {
 		swapId (state,logId) {

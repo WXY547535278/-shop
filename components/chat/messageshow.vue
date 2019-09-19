@@ -5,8 +5,11 @@
 			<view class="name" v-if="message.user=='home'">安昂商城客服-小二</view>
 		</view>
 		<view class="m-content">
+			<view class="time">
+				{{time}}
+			</view>
 			<view class="m-content-head" :class="{'m-content-head-right':message.user=='customer'}">
-				<view :class="'m-content-head-'+message.user">{{message.content}} </view>
+				<view :class="'m-content-head-'+message.user" v-html="message.content"></view>
 			</view>
 		</view>
 		<view class="m-right">
@@ -23,11 +26,12 @@
 	export default {
 		data() {
 			return {
-				abosultPaht: "../../../"
+				abosultPaht: "../../../",
+				time: new Date().toLocaleTimeString()
 			}
 		},
 		props: ['message', 'id'],
-		computed: mapState(['user'])
+		computed: mapState(['user']),
 	}
 </script>
 
@@ -55,8 +59,8 @@
 		width: 300rpx;
 		position: absolute;
 		left: 100rpx;
-		top: -2rpx;
-		z-index: 999;
+		top: -20rpx;
+		z-index: 10;
 		font-size: 20rpx;
 	}
 	.m-content {
@@ -65,6 +69,21 @@
 		flex-direction: column;
 		justify-content: center;
 		word-break: break-all;
+		position: relative;
+	}
+	.m-content .time {
+		width: 150rpx;
+		height: 30rpx;
+		line-height: 30rpx;
+		background-color: #C1C1C1;
+		text-align: center;
+		color: #FFFFFF;
+		border-radius: 10rpx;
+		position: absolute;
+		font-size: 16rpx;
+		top: -26px;
+		left: 50%;
+		transform: translateX(-50%);
 	}
 	.m-right {
 		display: flex;
@@ -80,6 +99,11 @@
 	.m-content-head {
 		position: relative;
 	}
+	.m-content-head image{
+		width: 30rpx;
+		height: 30rpx;
+		transform: translateY(6rpx);
+	}
 	.m-content-head-right {
 		display: flex;
 		justify-content: flex-end;
@@ -89,7 +113,7 @@
 		background: #FFFFFF;
 		border-radius: 24rpx;
 		padding: 20rpx;
-		transform: translateY(20rpx);
+		transform: translateY(10rpx);
 	}
 	.m-content-head-customer {
 		border: 1px white solid;

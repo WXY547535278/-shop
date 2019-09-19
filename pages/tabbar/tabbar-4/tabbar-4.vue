@@ -69,6 +69,9 @@
 </script>
 
 <style lang="scss" scoped>
+	page {
+		background-color: #F0F0F0;
+	}
 	.content {
 		width: 100%;
 		height: 100%;

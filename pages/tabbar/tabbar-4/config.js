@@ -6,54 +6,5 @@ export const kefuItems = [
 		phone: '12345678911',
 		qq: '123456789',
 		picurl: require('./pic.jpg')
-	},
-	{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},{
-		name: '王某某',
-		wechat: 'zhengding0123456',
-		phone: '12345678911',
-		qq: '123456789',
-		picurl: require('./pic.jpg')
-	},
+	}
 ]

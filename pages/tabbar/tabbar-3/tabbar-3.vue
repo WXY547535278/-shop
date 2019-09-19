@@ -6,10 +6,10 @@
 			<view class="content-header-fixed">
 				<navigator href="" class="back"><image src="../../../static/img/tabbar/back2.png"></image></navigator>
 				<view class="title">消息</view>
-				<navigator class="search">
+				<!-- <navigator class="search">
 					<image src="../../../static/img/tabbar/search.png"></image>
 					<text>搜索</text>
-				</navigator>
+				</navigator> -->
 			</view>
 			<!-- 未读消息 -->
 			<view class="content-header-weidu">
@@ -30,7 +30,7 @@
 					</view>
 					<text>通知消息</text>
 				</navigator>
-				<navigator url="hudong" class="content-header-nav-item">
+				<navigator url="./hudong" class="content-header-nav-item">
 					<view class="yuanquan xiaoxi">
 						<image src="../../../static/img/tabbar/xiaoxi.png"></image>
 					</view>
@@ -44,22 +44,22 @@
 			<view class="content-xiaoxi-zuijin">
 				<navigator
 				class="xiaoxi-item"
-				v-for="(item,index) in zuijinITEMS"
+				v-for="(item,index) in hudong"
 				:key="index"
 				>
 					<view class="touxiang">
-						<image :src="item.picurl"></image>
+						<image src="../../../static/img/tabbar/pic.jpg"></image>
 					</view>
 					<view class="text">
-						<text class="name">{{item.name}}</text>
-						<view class="xiaoxi">{{item.xiaoxi}}</view>
-						<view class="date">{{item.date}}</view>
-						<view class="number">{{item.newsNumber}}</view>
+						<text class="name">{{item.from_id}}</text>
+						<view class="xiaoxi">{{item.content}}</view>
+						<view class="date" v-html="pTime(item.send_time)"></view>
+						<view class="number">{{item.read_count}}</view>
 					</view>
 				</navigator>
 			</view>
 			<!-- 两周前 -->
-			<view class="content-xiaoxi-twoWeek">
+			<!-- <view class="content-xiaoxi-twoWeek">
 				<view class="clock">
 					<image src="../../../static/img/tabbar/time.png"></image>
 					<text>两周前的消息</text>
@@ -79,30 +79,52 @@
 						<view class="number">{{item.newsNumber}}</view>
 					</view>
 				</navigator>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
 
 <script>
+	import http from '../../../utils/http.js'
 	import {zuijinITEMS,twoWeekITEMS} from './config';
 	export default {
 		data() {
 			return {
-				
+				hudong: [],
+				time:''
 			}
 		},
 		onLoad() {
-
 		},
 		methods: {
 			// 判断未读消息是否两位数,然后根据情况改变样式
 			// 获取红标数字
 			getNumber() {
 				
+			},
+			// 格式化时间
+			pTime(time) {
+				return http.parseTime(time)
+			},
+			// 获取我的互动消息
+			getHudong: function() {
+				http.httpTokenRequest({
+					// url:'getMyWechatMessage?login_id='+this.$store.state.login_id,
+					url: 'getMyWechatMessage?login_id=1027',
+					method: 'get'
+				}, {}).then(res => {
+					console.log(res)
+					if (res.data.code == 200) {
+						this.hudong = res.data.data
+						console.log("获取到的互动消息", this.hudong)
+					}
+				}, error => {
+					console.log(error);
+				})
 			}
 		},
 		created() {
+			this.getHudong()
 			this.zuijinITEMS = zuijinITEMS,
 			this.twoWeekITEMS = twoWeekITEMS
 		}
@@ -110,6 +132,9 @@
 </script>
 
 <style lang="scss">
+	page {
+		background-color: #F0F0F0;
+	}
 	.content {
 		width: 100%;
 		height: 100%;

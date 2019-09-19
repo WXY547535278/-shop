@@ -79,6 +79,7 @@
 </template>
 
 <script>
+	import http from '../../../utils/http.js'
 	import MyHeader from '../../../components/header/header.vue'
 	export default {
 		data() {

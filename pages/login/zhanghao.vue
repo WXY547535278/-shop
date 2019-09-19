@@ -89,7 +89,7 @@
 								setTimeout(function() {
 									//要延时执行的代码
 									uni.switchTab({
-										url: '../tabbar/tabbar-1/tabbar-1'
+										url: '../tabbar/tabbar-2/tabbar-2'
 									})
 								}, 2000) //延迟时间
 							}

@@ -4,12 +4,12 @@
 			<image class="header-back" src="../../../static/img/tabbar/back.png" slot="backImg"></image>
 			<text class="header-title" slot="title">我的订单</text>
 			<view class="header-search" slot="right">
-				<navigator class="search">
+				<!-- <navigator class="search">
 					<image id="search" src="../../../static/img/tabbar/sousuo.png"></image>
-				</navigator>
+				</navigator> -->
 				<navigator class="dots">
 					<view class="newsNumber">
-						{{newsNumber}}
+						<!-- {{newsNumber}} -->
 					</view>
 					<text class="dot"></text>
 					<text class="dot"></text>
@@ -29,44 +29,48 @@
 
 		<view class="dingdan">
 			<view class="dingdan-item" v-for="(item,index) in items" :key="index">
-				<text class="zhuangtai">{{item.type}}</text>
-				<navigator url="./dingdanXiangqing" hover-class="navigator-hover" open-type="navigate">
-					<view class="xiangqing">
-						<image :src="item.picUrl"></image>
-						<view class="text">
-							<view class="left">
-								<view class="name">{{item.name}}</view>
-								<view class="taocan">{{item.taocan}}</view>
-							</view>
-							<view class="right">
-								<view class="jiage">¥{{item.jiage}}</view>
-								<view class="number">×{{item.number}}</view>
-							</view>
+				<text class="zhuangtai">{{status}}</text>
+				<!-- 				<navigator url="'./dingdanXiangqing?orderId='+item.order_id" hover-class="navigator-hover" open-type="navigate"> -->
+				<view class="xiangqing" @click="toDeatil(item.order_id)">
+					<image src="../../../static/img/tabbar/pic.png"></image>
+					<view class="text">
+						<view class="left">
+							<view class="name">{{item.product_list[0].product_name}}</view>
+							<view class="name">[{{item.product_list[0].brand_name}}]</view>
+							<view class="taocan">{{item.product_list[0].product_name}}[{{item.product_list[0].brand_name}}]</view>
+						</view>
+						<view class="right">
+							<view class="jiage">¥{{item.order_price}}</view>
+							<view class="number">×{{item.order_num}}</view>
 						</view>
 					</view>
-				</navigator>
+				</view>
+				<!-- 				</navigator> -->
 				<view class="bottom">
 					<view class="heji">
-						共{{item.number}}件商品&nbsp;合计：¥{{item.heji}}(含运费¥{{item.yunfei}})
+						共{{item.order_num}}件商品&nbsp;合计：¥{{item.order_price*item.order_num+item.kd_fee}}(含运费¥{{item.kd_fee}})
 					</view>
 					<view class="caozuo">
-						<navigator v-if="arr[0]||arr[1]||arr[2]||arr[3]||arr[4]">联系客服</navigator>
-						<navigator v-if="arr[0]">追加评价</navigator>
-						<navigator v-if="arr[0]||arr[2]||arr[3]||arr[4]">再次购买</navigator>
-						<navigator v-if="arr[0]||arr[4]">删除订单</navigator>
-						<navigator v-if="arr[1]">付款</navigator>
-						<navigator v-if="arr[2]||arr[3]">确认收货</navigator>
-						<navigator v-if="arr[2]">提醒发货</navigator>
-						<navigator v-if="arr[4]">评价</navigator>
+						<view class="operation" v-if="arr[0]||arr[1]||arr[2]||arr[3]||arr[4]">联系客服</view>
+						<!-- <view class="operation" v-if="arr[0]">追加评价</view> -->
+						<!-- <view class="operation" v-if="arr[0]||arr[2]||arr[3]||arr[4]">再次购买</view> -->
+						<view class="operation" @click="delOrder(item.order_id)" v-if="arr[0]||arr[4]">删除订单</view>
+						<!-- <view class="operation" v-if="arr[1]">付款</view> -->
+						<!-- <view class="operation" v-if="arr[2]||arr[3]">确认收货</view> -->
+						<!-- <view class="operation" v-if="arr[2]">提醒发货</view> -->
+						<!-- <view class="operation" v-if="arr[4]">评价</view> -->
 					</view>
 				</view>
 			</view>
 		</view>
+		<!-- <uni-load-more  :loadingType="loadingType" :contentText="contentText" ></uni-load-more> -->
 	</view>
 </template>
 
 <script>
+	import http from '../../../utils/http.js'
 	import MyHeader from '../../../components/header/header.vue';
+	import uniLoadMore from '../../../components/uni-load-more.vue'
 	import {
 		allItems,
 		daifukuan,
@@ -78,26 +82,77 @@
 		data() {
 			return {
 				// 设置订单数据默认类型
-				items: '',
+				items: [],
+				product_list: [],
 				// 用于判断订单操作按钮显示或隐藏的数组,当点击第几个订单导航时,这个数组第几个选项的值设为true
 				arr: [1, '', '', '', ''],
 				// 搜索图标旁边的数字红标数据
 				newsNumber: 66,
 				//保存当前导航激活项的索引值
-				navItemID: '0'
+				navItemID: '0',
+				status: '',
+				order: {
+					// + this.$store.state.login_id
+					url: 'getMyOrder?login_id=' + this.$store.state.login_id + '&status=' + status,
+					method: 'get'
+				},
+				page: 1,
+				size: 4,
+				hasMoreData: null
 			}
 		},
 		components: {
-			MyHeader
+			MyHeader,
+			uniLoadMore
 		},
-		onLoad() {
-
-		},
+		updated() {},
 		methods: {
+			// 跳转到订单详情页
+			toDeatil(order_id) {
+				console.log(order_id)
+				uni.navigateTo({
+					url: './dingdanXiangqing?order_id=' + order_id,
+					success: res => {},
+					fail: () => {},
+					complete: () => {}
+				})
+			},
+			// 删除订单
+			delOrder(order_id) {
+				console.log(order_id)
+				var orderId = order_id
+				uni.showModal({
+					title: '提示',
+					content: '是否确认删除',
+					success: function(res) {
+						if (res.confirm) {
+							http.httpTokenRequest({
+								// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status,
+								url: 'delOrder',
+								method: 'post'
+							}, {
+								"order_id": orderId
+							}).then(res => {
+								if (res.data.code == 200) {
+									uni.showToast({
+										title: '删除成功！',
+										icon: 'none',
+										duration: 2000
+									})
+								}
+							}, error => {
+								console.log(error);
+							})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				})
+			},
 			//清除所有nav元素激活样式
 			clean(navItem) {
 				for (let i = 0; i < navItem.length; i++) {
-					navItem[i].className = 'navItem';
+					navItem[i].className = 'navItem'
 				}
 			},
 			// 点击导航改变订单展示区
@@ -106,27 +161,107 @@
 				if (this.navItemID === e.dataset.id) {
 					return;
 				}
+				// 获取nav导航元素组
+				var navItem = this.$el.querySelector('#nav').querySelectorAll('.navItem');
+				this.status = e.dataset.id
+				this.getOrder()
+				console.log(e.dataset.id);
 				// 修改订单显示区数据源对应当前点击选项
 				this.navItemID = e.dataset.id;
-				this.items = this.arr2[this.navItemID];
+				this.items = this.arr[this.navItemID];
 				// 订单操作图标开关
 				this.arr = ['', '', '', '', ''];
 				this.arr[this.navItemID] = true;
 				// 切换选项卡样式
-				this.clean(this.navItem);
-				this.navItem[this.navItemID].className = 'navItem active';
+				this.clean(navItem);
+				navItem[this.navItemID].className = 'navItem active';
+			},
+			// 获取我的订单
+			getOrder: function(message) {
+				uni.showNavigationBarLoading() //在当前页面显示导航条加载动画
+				uni.showLoading({ //显示 loading 提示框
+					title: message,
+				})
+				http.httpTokenRequest({
+					// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status,
+					url: 'getMyOrder?login_id=1027&status=' + this.status + '&page=' + this.page + '&size=' + this.size,
+					method: 'get'
+				}, {}).then(res => {
+					var allOrder = this.items
+					if (res.data.code == 200) {
+						if (res.data.data.length >= 0) {
+							uni.hideNavigationBarLoading()
+							uni.hideLoading()
+							if (this.page == 1) {
+								allOrder = []
+							}
+							var allorder = res.data.data
+							if (allorder.length < this.size) {
+								this.items = allOrder.concat(allorder)
+								this.hasMoreData = false
+							} else {
+								this.items = allOrder.concat(allorder)
+								this.hasMoreData = true
+								this.page++
+								console.log(this.items)
+							}
+						}
+						// this.items = res.data.data
+						for (var i = 0; i < res.data.data.length; i++) {
+							this.product_list.push(res.data.data[i].product_list[0])
+						}
+						if (this.status == 0) {
+							this.status = '全部'
+						} else if (this.status == 1) {
+							this.status = '待付款'
+						} else if (this.status == 2) {
+							this.status = '待发货'
+						} else if (this.status == 3) {
+							this.status = '待收货'
+						} else if (this.status == 4) {
+							this.status = '待评价'
+						}
+						console.log("获取到的订单", res.data.data);
+						console.log("获取到的订单列表", this.product_list);
+					}
+				}, error => {
+					console.log(error);
+				})
 			}
 		},
 		created() {
+			// 获取订单列表
+			this.getOrder()
 			// 定义一个数组保存各类数据的索引
 			this.arr2 = [allItems, daifukuan, daifahuo, daishouhuo, daipingjia];
 			//初始化订单数据
 			this.items = this.arr2[this.navItemID]
 		},
-		mounted() {
-			// 获取nav导航元素组
-			this.navItem = this.$el.querySelector('#nav').querySelectorAll('.navItem');
-		}
+		mounted() {},
+		/**
+		 * 页面相关事件处理函数--监听用户下拉动作
+		 */
+		onPullDownRefresh: function() {
+			console.log("下拉")
+			this.page = 0
+			this.getOrder('正在刷新数据')
+		},
+
+		/**
+		 * 页面上拉触底事件的处理函数
+		 */
+		onReachBottom: function() {
+			console.log("上拉" + this.hasMoreData)
+			console.log("當前頁面",this.page)
+			if (this.hasMoreData) {
+				this.getOrder('加载更多数据')
+			} else {
+				uni.showToast({
+					title: '没有更多数据',
+					icon:"none"
+				})
+			}
+		},
 	}
 </script>
 
@@ -166,10 +301,10 @@
 					line-height: 30rpx;
 					color: #fff;
 					position: absolute;
-					right: -6rpx;
-					top: -24rpx;
-					height: 30rpx;
-					width: 40rpx;
+					right: 6rpx;
+					top: -4rpx;
+					height: 14rpx;
+					width: 14rpx;
 					background-color: #FF4E02;
 					border-radius: 50%;
 				}
@@ -254,8 +389,12 @@
 
 							.name {
 								width: 100%;
-								height: 68rpx;
-								overflow: hidden;
+								height: 36rpx;
+								font-weight: 600;
+							}
+
+							.name:nth-child(2) {
+								margin-left: 10rpx;
 							}
 
 							.taocan {
@@ -282,6 +421,7 @@
 
 				.bottom {
 					width: 100%;
+					font-size: 20rpx;
 
 					.heji {
 						float: right;
@@ -292,7 +432,7 @@
 						right: 8rpx;
 						bottom: 20rpx;
 
-						navigator {
+						.operation {
 							display: inline-block;
 							width: 110rpx;
 							height: 40rpx;

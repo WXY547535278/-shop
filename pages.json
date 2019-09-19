@@ -3,69 +3,101 @@
 		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 		    "path" : "pages/login/zhanghao",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"账号登录"
+				// "enablePullDownRefresh": true//允許上拉加載
+				}
 		},
 		{
 		    "path" : "pages/tabbar/tabbar-4/chat",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"聊天"
+				// "enablePullDownRefresh": true//允許上拉加載
+			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-4/tabbar-4",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText":"客服",
+				"enablePullDownRefresh": true//允許上拉加載
 			}
 		},
 		{
 		    "path" : "pages/login/forgetPwd",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"忘记密码"
+				// "enablePullDownRefresh": true//允許上拉加載
+			}
 		},
 		{
 		    "path" : "pages/register/register",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"注册"
+				// "enablePullDownRefresh": true//允許上拉加載
+			}
 		},
 		{
 		    "path" : "pages/tabbar/tabbar-3/transactionDetail",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"交易物流详情"
+				// "enablePullDownRefresh": true//允許上拉加載
+			}
 		},
 		{
 		    "path" : "pages/tabbar/tabbar-3/notice",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"通知消息",
+				"enablePullDownRefresh": true//允許上拉加載
+			}
 		},
 		{
 		    "path" : "pages/tabbar/tabbar-3/transaction",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"交易物流",
+				"enablePullDownRefresh": true//允許上拉加載
+			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-1/tabbar-1",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText":"首页"
+				// "enablePullDownRefresh": true//允許上拉加載
 			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-2/tabbar-2",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText":"订单",
+				"enablePullDownRefresh": true//允許上拉加載
 			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-3/tabbar-3",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText":"消息",
+				"enablePullDownRefresh": true//允許上拉加載
 			}
 		},
 		{
 			"path": "pages/tabbar/tabbar-2/dingdanXiangqing",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText":"订单详情"
+				// "enablePullDownRefresh": true//允許上拉加載
 			}
 		},
 	    {
             "path" : "pages/tabbar/tabbar-3/hudong",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText":"互动",
+				"enablePullDownRefresh": true//允許上拉加載
+			}
         },
 		{
 		    "path" : "pages/login/duanxin",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText":"短信登录",
+				"enablePullDownRefresh": true//允許上拉加載
+			}
 		}
     ],
 	"globalStyle": {
