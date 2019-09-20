@@ -11,26 +11,26 @@
 				</view>
 				<view class="top_right">
 					<view class="top_right_tip">
-						<text class="top_right_tip_txt">05</text>
+						<text class="top_right_tip_txt"></text>
 					</view>
-					<text class="top_right_txt">...</text>
-					<view class="top_right_info" v-show="false">
-						<view class="top_right_info_box">
+					<text class="top_right_txt" @click="flag=!flag" >...</text>
+					<view class="top_right_info" v-show="flag">
+						<view class="top_right_info_box" @click="toMessage">
 							<image src="../../../static/img/tabbar/liaotian.png" mode=""></image>
 							<view class="top_right_info_box_txt">
 								<text>消息</text>
 							</view>
 							<view class="top_right_info_box_txt_tip">
-								<text>05</text>
+								<text></text>
 							</view>
 						</view>
-						<view class="top_right_info_box">
+						<view class="top_right_info_box" @click="toIndex">
 							<image src="../../../static/img/tabbar/index.png" mode=""></image>
 							<view class="top_right_info_box_txt">
 								<text>首页</text>
 							</view>
 						</view>
-						<view class="top_right_info_box">
+						<view class="top_right_info_box" @click="toKefu">
 							<image src="../../../static/img/tabbar/kefu.png" mode=""></image>
 							<view class="top_right_info_box_txt">
 								<text>专属客服</text>
@@ -76,8 +76,8 @@
 							<image src="../../../static/img/tabbar/paisong.png" mode=""></image>
 						</view>
 						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已签收</view>
-							<view class="center_box_right_left_address">广东省东莞市南城白马公司 已签收 签收人：王某某。快件已送达，如有 疑问请联系：13888888888，投诉电话：0769-8</view>
+							<view class="center_box_right_left_title">派送中</view>
+							<view class="center_box_right_left_address">【东莞市】广东省东莞市南城白马派件员：张某某 电话：13888888888 当前正在为您派件</view>
 						</view>
 					</view>
 				</view>
@@ -91,9 +91,8 @@
 							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
 						</view>
 						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已签收</view>
-							<view class="center_box_right_left_address">广东省东莞市南城白马公司 已签收 签收人：王某某。快件已送达，如有 疑问请联系：<text class="phone" style="color: #FF4302;">13888888888</text>，投诉电话：<text
-								 class="phone" style="color: #FF4302;">0769-8</text></view>
+							<view class="center_box_right_left_title">运输中</view>
+							<view class="center_box_right_left_address">广东省东莞市南城白马 已收入</view>
 						</view>
 					</view>
 				</view>
@@ -103,17 +102,79 @@
 						<view class="center_box_left_time">12:20</view>
 					</view>
 					<view class="center_box_right">
-						<text class="center_box_right_txt">收</text>
+						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
+							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
+						</view>
 						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已签收</view>
-							<view class="center_box_right_left_address">广东省东莞市南城白马公司 已签收 签收人：王某某。快件已送达，如有 疑问请联系：13888888888，投诉电话：0769-8</view>
+							<view class="center_box_right_left_title">已揽件</view>
+							<view class="center_box_right_left_address">快件到达 广东省东莞市虎门公司，已揽收</view>
+						</view>
+					</view>
+				</view>
+				<view class="center_box">
+					<view class="center_box_left">
+						<view class="center_box_left_date">07-25</view>
+						<view class="center_box_left_time">12:20</view>
+					</view>
+					<view class="center_box_right">
+						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
+							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
+						</view>
+						<view class="center_box_right_left">
+							<view class="center_box_right_left_title">已发货</view>
+							<view class="center_box_right_left_address">包裹正在等揽收</view>
+						</view>
+					</view>
+				</view>
+				<view class="center_box">
+					<view class="center_box_left">
+						<view class="center_box_left_date">07-25</view>
+						<view class="center_box_left_time">12:20</view>
+					</view>
+					<view class="center_box_right">
+						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
+							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
+						</view>
+						<view class="center_box_right_left">
+							<view class="center_box_right_left_title">已出库</view>
+							<view class="center_box_right_left_address">包裹已出库</view>
+						</view>
+					</view>
+				</view>
+				<view class="center_box">
+					<view class="center_box_left">
+						<view class="center_box_left_date">07-25</view>
+						<view class="center_box_left_time">12:20</view>
+					</view>
+					<view class="center_box_right">
+						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
+							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
+						</view>
+						<view class="center_box_right_left">
+							<view class="center_box_right_left_title">仓库处理中</view>
+							<view class="center_box_right_left_address">仓库处理中</view>
+						</view>
+					</view>
+				</view>
+				<view class="center_box">
+					<view class="center_box_left">
+						<view class="center_box_left_date">07-25</view>
+						<view class="center_box_left_time">12:20</view>
+					</view>
+					<view class="center_box_right">
+						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
+							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
+						</view>
+						<view class="center_box_right_left">
+							<view class="center_box_right_left_title">仓库已接单</view>
+							<view class="center_box_right_left_address">仓库已接单</view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
 		<!-- 猜你喜欢 -->
-		<my-like :itemData="items"></my-like>
+		<!-- <my-like :itemData="items"></my-like> -->
 	</view>
 </template>
 
@@ -133,7 +194,8 @@
 					url: 'getLoginUserByLoginId?login_id=1018',
 					method: 'get'
 				},
-				param:{}
+				param:{},
+				flag:false
 			};
 		},
 		components: {
@@ -153,6 +215,22 @@
 				// }).then(res => {
 				// 	console.log(res[1]);
 				// })
+			},
+			// 页面跳转
+			toMessage: function() {
+				uni.navigateTo({
+					url: '/pages/tabbar/tabbar-3/hudong'
+				})
+			},
+			toIndex: function() {
+				uni.switchTab({
+					url: '/pages/tabbar/tabbar-1/tabbar-1'
+				})
+			},
+			toKefu: function() {
+				uni.switchTab({
+					url: '/pages/tabbar/tabbar-4/tabbar-4'
+				})
 			}
 		},
 		mounted() {
@@ -214,15 +292,16 @@
 					&_tip {
 						&_txt {
 							display: block;
-							height: 22rpx;
-							width: 26rpx;
+							height: 6rpx;
+							width: 6rpx;
 							border: 2rpx solid #FF4302;
 							background-color: #FF4302;
-							border-radius: 16rpx;
+							border-radius: 50%;
 							font-size: 12rpx;
 							color: #FFFFFF;
 							text-align: center;
 							line-height: 22rpx;
+							transform: translateX(10rpx);
 						}
 					}
 
@@ -268,11 +347,11 @@
 
 							&_txt_tip {
 								display: inline-block;
-								height: 22rpx;
-								width: 26rpx;
+								height: 8rpx;
+								width: 8rpx;
 								border: 2rpx solid #FF4302;
 								background-color: #FF4302;
-								border-radius: 16rpx;
+								border-radius: 50%;
 								font-size: 12rpx;
 								color: #FFFFFF;
 								text-align: center;
@@ -299,7 +378,7 @@
 
 				&_box {
 					width: 100%;
-					margin-top: 20rpx;
+					margin-top: 60rpx;
 					display: flex;
 					justify-content: flex-start;
 

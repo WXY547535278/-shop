@@ -7,14 +7,37 @@
 				<!-- <navigator class="search">
 					<image id="search" src="../../../static/img/tabbar/sousuo.png"></image>
 				</navigator> -->
-				<navigator class="dots">
+				<view class="dots" @click="flag=!flag">
 					<view class="newsNumber">
 						<!-- {{newsNumber}} -->
 					</view>
 					<text class="dot"></text>
 					<text class="dot"></text>
 					<text class="dot"></text>
-				</navigator>
+				</view>
+				<view class="top_right_info" v-show="flag">
+					<view class="top_right_info_box" @click="toMessage">
+						<image src="../../../static/img/tabbar/liaotian.png" mode=""></image>
+						<view class="top_right_info_box_txt">
+							<text>消息</text>
+						</view>
+						<view class="top_right_info_box_txt_tip">
+							<text></text>
+						</view>
+					</view>
+					<view class="top_right_info_box" @click="toIndex">
+						<image src="../../../static/img/tabbar/index.png" mode=""></image>
+						<view class="top_right_info_box_txt">
+							<text>首页</text>
+						</view>
+					</view>
+					<view class="top_right_info_box" @click="toKefu">
+						<image src="../../../static/img/tabbar/kefu.png" mode=""></image>
+						<view class="top_right_info_box_txt">
+							<text>专属客服</text>
+						</view>
+					</view>
+				</view>
 			</view>
 		</my-header>
 		<!-- 导航 -->
@@ -31,7 +54,7 @@
 			<view class="dingdan-item" v-for="(item,index) in items" :key="index">
 				<text class="zhuangtai">{{statu}}</text>
 				<!-- 				<navigator url="'./dingdanXiangqing?orderId='+item.order_id" hover-class="navigator-hover" open-type="navigate"> -->
-				<view class="xiangqing" @click="toDeatil(item.order_id)">
+				<view class="xiangqing" @click="toDeatil(item.order_id,statu)">
 					<image src="../../../static/img/tabbar/pic.png"></image>
 					<view class="text">
 						<view class="left">
@@ -81,7 +104,8 @@
 	export default {
 		data() {
 			return {
-				// 设置订单数据默认类型
+				// 订单列表
+				flag: false,
 				items: [],
 				product_list: [],
 				// 用于判断订单操作按钮显示或隐藏的数组,当点击第几个订单导航时,这个数组第几个选项的值设为true
@@ -94,7 +118,7 @@
 				statu: '',
 				page: 1,
 				size: 4,
-				hasMoreData: true//上拉时是否继续请求数据，即是否还有更多数据
+				hasMoreData: true //上拉时是否继续请求数据，即是否还有更多数据
 			}
 		},
 		components: {
@@ -103,11 +127,27 @@
 		},
 		updated() {},
 		methods: {
+			// 页面跳转
+			toMessage: function() {
+				uni.navigateTo({
+					url: '/pages/tabbar/tabbar-3/hudong'
+				})
+			},
+			toIndex: function() {
+				uni.switchTab({
+					url: '/pages/tabbar/tabbar-1/tabbar-1'
+				})
+			},
+			toKefu: function() {
+				uni.switchTab({
+					url: '/pages/tabbar/tabbar-4/tabbar-4'
+				})
+			},
 			// 跳转到订单详情页
-			toDeatil(order_id) {
+			toDeatil(order_id, st) {
 				console.log(order_id)
 				uni.navigateTo({
-					url: './dingdanXiangqing?order_id=' + order_id,
+					url: './dingdanXiangqing?order_id=' + order_id + '&statu=' + st,
 					success: res => {},
 					fail: () => {},
 					complete: () => {}
@@ -153,6 +193,7 @@
 			},
 			// 点击导航改变订单展示区
 			changeDingdan(e) {
+				this.page = 1
 				// 判断如果点击当前选中选项,什么也不做
 				if (this.navItemID === e.dataset.id) {
 					return;
@@ -164,7 +205,7 @@
 				console.log(e.dataset.id);
 				// 修改订单显示区数据源对应当前点击选项
 				this.navItemID = e.dataset.id;
-				this.items = this.arr[this.navItemID];
+				// this.items = this.arr[this.navItemID];
 				// 订单操作图标开关
 				this.arr = ['', '', '', '', ''];
 				this.arr[this.navItemID] = true;
@@ -193,7 +234,7 @@
 								allOrder = []
 							}
 							var allorder = res.data.data
-							console.log("下一頁加載出來的數據",allorder)
+							console.log("下一頁加載出來的數據", allorder)
 							if (allorder.length < this.size) {
 								this.items = allOrder.concat(allorder)
 								this.hasMoreData = false
@@ -228,7 +269,7 @@
 			}
 		},
 		created() {
-			
+
 			// 定义一个数组保存各类数据的索引
 			this.arr2 = [allItems, daifukuan, daifahuo, daishouhuo, daipingjia];
 			//初始化订单数据
@@ -253,13 +294,13 @@
 		 */
 		onReachBottom: function() {
 			console.log("上拉" + this.hasMoreData)
-			console.log("當前頁面",this.page)
+			console.log("當前頁面", this.page)
 			if (this.hasMoreData) {
 				this.getOrder('加载更多数据')
 			} else {
 				uni.showToast({
 					title: '没有更多数据',
-					icon:"none"
+					icon: "none"
 				})
 			}
 		},
@@ -284,6 +325,55 @@
 
 		.header-search {
 			position: relative;
+
+			.top_right_info {
+				position: absolute;
+				width: 200rpx;
+				height: 180rpx;
+				background-color: #FFFFFF;
+				border: 2rpx solid #FFFFFF;
+				box-shadow: 6rpx 6rpx 8rpx #808080;
+				right: 16rpx;
+				top: 44rpx;
+				z-index: 100;
+
+				&_box {
+					height: 33.33333%;
+					width: 100%;
+					border-bottom: 2rpx solid #DADADA;
+					display: flex;
+					align-items: center;
+					box-sizing: border-box;
+					padding-left: 10rpx;
+
+					image {
+						width: 30rpx;
+						height: 30rpx;
+					}
+
+					&_txt {
+						margin-left: 20rpx;
+					}
+
+					&_txt_tip {
+						display: inline-block;
+						height: 8rpx;
+						width: 8rpx;
+						border: 2rpx solid #FF4302;
+						background-color: #FF4302;
+						border-radius: 50%;
+						font-size: 12rpx;
+						color: #FFFFFF;
+						text-align: center;
+						line-height: 22rpx;
+						margin-left: 30rpx;
+					}
+				}
+
+				&_box:nth-child(3) {
+					border-bottom: 0;
+				}
+			}
 
 			.search {
 				position: absolute;

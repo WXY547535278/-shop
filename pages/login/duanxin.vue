@@ -86,7 +86,7 @@
 				console.log('form发生了submit事件，携带数据为：' + JSON.stringify(e.detail.value))
 				http.httpRequest(this.phoneLogin, JSON.stringify(e.detail.value)).then(res => {
 					console.log(res);
-					if (res.data.code == 500) {
+					if (res.data.code == 400) {
 						uni.showToast({
 							title: res.data.msg,
 							icon: 'none',

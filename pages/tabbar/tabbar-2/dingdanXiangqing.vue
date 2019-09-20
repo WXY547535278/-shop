@@ -6,14 +6,37 @@
 			</navigator>
 			<view class="header-title" slot="title">订单详情</view>
 			<view class="header-search" slot="right">
-				<navigator class="dots">
+				<view class="dots" @click="flag=!flag">
 					<view class="newsNumber">
 						<!-- {{newsNumber}} -->
 					</view>
 					<text class="dot"></text>
 					<text class="dot"></text>
 					<text class="dot"></text>
-				</navigator>
+				</view>
+				<view class="top_right_info" v-show="flag">
+					<view class="top_right_info_box" @click="toMessage">
+						<image src="../../../static/img/tabbar/liaotian.png" mode=""></image>
+						<view class="top_right_info_box_txt">
+							<text>消息</text>
+						</view>
+						<view class="top_right_info_box_txt_tip">
+							<text></text>
+						</view>
+					</view>
+					<view class="top_right_info_box" @click="toIndex">
+						<image src="../../../static/img/tabbar/index.png" mode=""></image>
+						<view class="top_right_info_box_txt">
+							<text>首页</text>
+						</view>
+					</view>
+					<view class="top_right_info_box" @click="toKefu">
+						<image src="../../../static/img/tabbar/kefu.png" mode=""></image>
+						<view class="top_right_info_box_txt">
+							<text>专属客服</text>
+						</view>
+					</view>
+				</view>
 			</view>
 		</my-header>
 		<!-- 顶部装饰 -->
@@ -125,12 +148,13 @@
 				// 右上角红标数字
 				// newsNumber: 66,
 				orderId: '',
-				oderDetail: ''
+				oderDetail: '',
+				flag: false
 			}
 		},
 		onLoad: function(e) {
 			this.orderId = e.order_id
-			console.log("从前一个页面传过来的order_id：", e.order_id)
+			console.log("从前一个页面传过来的order_id：", e.order_id, e.statu)
 		},
 		methods: {
 			// 获取我的订单详情
@@ -146,6 +170,22 @@
 				}, error => {
 					console.log(error);
 				})
+			},
+			// 页面跳转
+			toMessage: function() {
+				uni.navigateTo({
+					url: '/pages/tabbar/tabbar-3/hudong'
+				})
+			},
+			toIndex: function() {
+				uni.switchTab({
+					url: '/pages/tabbar/tabbar-1/tabbar-1'
+				})
+			},
+			toKefu: function() {
+				uni.switchTab({
+					url: '/pages/tabbar/tabbar-4/tabbar-4'
+				})
 			}
 		},
 		created() {
@@ -158,6 +198,7 @@
 	page {
 		background: #F0F0F0;
 	}
+
 	.dingdan {
 		background: #F0F0F0;
 
@@ -180,6 +221,55 @@
 
 			&-search {
 				position: relative;
+
+				.top_right_info {
+					position: absolute;
+					width: 200rpx;
+					height: 180rpx;
+					background-color: #FFFFFF;
+					border: 2rpx solid #FFFFFF;
+					box-shadow: 6rpx 6rpx 8rpx #808080;
+					right: 16rpx;
+					top: 44rpx;
+					z-index: 100;
+
+					&_box {
+						height: 33.33333%;
+						width: 100%;
+						border-bottom: 2rpx solid #DADADA;
+						display: flex;
+						align-items: center;
+						box-sizing: border-box;
+						padding-left: 10rpx;
+
+						image {
+							width: 30rpx;
+							height: 30rpx;
+						}
+
+						&_txt {
+							margin-left: 20rpx;
+						}
+
+						&_txt_tip {
+							display: inline-block;
+							height: 8rpx;
+							width: 8rpx;
+							border: 2rpx solid #FF4302;
+							background-color: #FF4302;
+							border-radius: 50%;
+							font-size: 12rpx;
+							color: #FFFFFF;
+							text-align: center;
+							line-height: 22rpx;
+							margin-left: 30rpx;
+						}
+					}
+
+					&_box:nth-child(3) {
+						border-bottom: 0;
+					}
+				}
 
 				.dots {
 					.newsNumber {

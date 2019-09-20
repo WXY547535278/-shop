@@ -49,6 +49,11 @@
 				}
 			}
 		},
+		created() {
+			var AppId = 'wxc0ea276f46bfe519'
+			const local = window.location.href
+			window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + AppId + '&redirect_uri=' + encodeURIComponent(local) + '&response_type=code&scope=snsapi_base&state=1#wechat_redirect';
+		},
 		methods: {
 			formSubmit:function(e) {
 				console.log(JSON.stringify(e.detail.value));
