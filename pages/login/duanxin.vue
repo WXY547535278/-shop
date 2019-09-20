@@ -38,7 +38,8 @@
 </template>
 
 <script>
-	import http from '../../utils/http.js';
+	import http from '../../utils/http.js'
+	import cookie from '../../utils/cookie.js'
 	export default {
 		name: 'loginDuanxin',
 		data() {
@@ -96,7 +97,9 @@
 					if (res.data.code == 200) {
 						console.log("短信登录成功返回的token数据");
 						console.log(res.data.data.token)
-						console.log(res.data.data.employeeInfo.login_id)
+						// console.log(res.data.data.employeeInfo.login_id)
+						// 保存cookie2天
+						cookie.setCookie(res.data.data.employeeInfo.login_id, 2)
 						// 设置状态管理器中的login_id
 						this.$store.commit('swapId',res.data.data.employeeInfo.login_id)
 						uni.setStorage({

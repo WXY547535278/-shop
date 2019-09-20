@@ -7,7 +7,7 @@
 			<view class="header-title" slot="title">订单详情</view>
 			<view class="header-search" slot="right">
 				<view class="dots" @click="flag=!flag">
-					<view class="newsNumber">
+					<view class="newsNumber" v-if="showPoint">
 						<!-- {{newsNumber}} -->
 					</view>
 					<text class="dot"></text>
@@ -20,7 +20,7 @@
 						<view class="top_right_info_box_txt">
 							<text>消息</text>
 						</view>
-						<view class="top_right_info_box_txt_tip">
+						<view class="top_right_info_box_txt_tip" v-if="showPoint">
 							<text></text>
 						</view>
 					</view>
@@ -105,16 +105,16 @@
 				</view>
 				<view class="myOrder-xinxi-bottom">
 					<view class="tab">
-						<navigator class="tab-container">
+						<navigator class="tab-container" url="/pages/tabbar/tabbar-4/tabbar-4" open-type="switchTab">
 							<view class="messageImg image"></view>
 							<text>联系卖家</text>
 						</navigator>
 					</view>
 					<view class="tab">
-						<navigator class="tab-container">
+						<view class="tab-container">
 							<view class="phoneImg image"></view>
-							<text>拨打电话</text>
-						</navigator>
+							<a :href="'tel:' + oderDetail.mobile"><text>拨打电话</text></a>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -149,10 +149,13 @@
 				// newsNumber: 66,
 				orderId: '',
 				oderDetail: '',
-				flag: false
+				flag: false,
+				showPoint: false,
+				count: null
 			}
 		},
 		onLoad: function(e) {
+			this.getHudong()
 			this.orderId = e.order_id
 			console.log("从前一个页面传过来的order_id：", e.order_id, e.statu)
 		},
@@ -166,6 +169,28 @@
 					if (res.data.code == 200) {
 						this.oderDetail = res.data.data
 						console.log("获取订单详情成功", res.data.data)
+					}
+				}, error => {
+					console.log(error);
+				})
+			},
+			// 获取我的互动消息
+			getHudong: function() {
+				http.httpTokenRequest({
+					url:'getMyWechatMessage?login_id='+this.$store.state.login_id,
+					// url: 'getMyWechatMessage?login_id=1027',
+					method: 'get'
+				}, {}).then(res => {
+					console.log(res)
+					if (res.data.code == 200) {
+						for(var i=0;i<res.data.data.length;i++) {
+							this.count += res.data.data[i].read_count
+						}
+						if(this.count>0) {
+							this.showPoint = true
+						}
+						console.log("获取到的互动消息条数",this.count);
+						console.log("获取到的互动消息", res.data.data)
 					}
 				}, error => {
 					console.log(error);
@@ -498,7 +523,10 @@
 						wdith: 375rpx;
 						height: 32rpx;
 						margin: 14rpx 0;
-
+						a {
+							text-decoration: none;
+							color: #333333;
+						}
 						&:first-child {
 							border-right: 2rpx solid #DADADA;
 						}

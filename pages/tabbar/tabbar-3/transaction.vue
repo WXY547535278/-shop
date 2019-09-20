@@ -44,13 +44,28 @@
 				page: 1,
 				size: 4,
 				hasMoreData: true ,//上拉时是否继续请求数据，即是否还有更多数据
-				items: []
+				items: [],
 			};
 		},
 		components: {
 			MyHeader
 		},
 		methods: {
+			// 从cookie中获取login_id
+			getCookie: function() {
+				var login_id = null
+				if (document.cookie.length > 0) {
+					var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+					for (var i = 0; i < arr.length; i++) {
+						var arr2 = arr[i].split('='); //再次切割
+						//判断查找相对应的值
+						if (arr2[0] == 'login_id') {
+							login_id = arr2[1]
+						}
+					}
+				}
+				return login_id
+			},
 			// 获取我的订单
 			getTc: function(message) {
 				uni.showNavigationBarLoading() //在当前页面显示导航条加载动画
@@ -58,8 +73,8 @@
 					title: message,
 				})
 				http.httpTokenRequest({
-					// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status + '&page=' + this.page + '&size=' + this.size,
-					url: 'getDealLog?login_id=1027&page=' + this.page + '&size=' + this.size,
+					url:'getDealLog?login_id='+this.getCookie() + '&page=' + this.page + '&size=' + this.size,
+					// url: 'getDealLog?login_id=1027&page=' + this.page + '&size=' + this.size,
 					method: 'get'
 				}, {}).then(res => {
 					console.log(res)
@@ -96,6 +111,7 @@
 	    onLoad: function() {
 	    	// 获取订单列表
 	    	this.getTc('正在加载数据...')
+			console.log("login_id",this.$store.state.login_id);
 	    },
 	    onPullDownRefresh: function() {
 	    	console.log("下拉")

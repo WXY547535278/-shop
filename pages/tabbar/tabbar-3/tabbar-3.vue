@@ -4,7 +4,7 @@
 		<view class="content-header">
 			<!-- 顶部固定栏 -->
 			<view class="content-header-fixed">
-				<navigator href="" class="back"><image src="../../../static/img/tabbar/back2.png"></image></navigator>
+				<!-- <navigator href="" class="back"><image src="../../../static/img/tabbar/back2.png"></image></navigator> -->
 				<view class="title">消息</view>
 				<!-- <navigator class="search">
 					<image src="../../../static/img/tabbar/search.png"></image>
@@ -13,7 +13,7 @@
 			</view>
 			<!-- 未读消息 -->
 			<view class="content-header-weidu">
-				<text>1</text><text>条未读消息</text>
+				<text>{{message}}</text><text>条未读消息</text>
 				<navigator class="clean"></navigator>
 			</view>
 			<!-- 顶部导航 -->
@@ -91,7 +91,8 @@
 		data() {
 			return {
 				hudong: [],
-				time:''
+				time:'',
+				message: null
 			}
 		},
 		onLoad() {
@@ -109,19 +110,38 @@
 			// 获取我的互动消息
 			getHudong: function() {
 				http.httpTokenRequest({
-					// url:'getMyWechatMessage?login_id='+this.$store.state.login_id,
-					url: 'getMyWechatMessage?login_id=1027',
+					url:'getMyWechatMessage?login_id='+this.getCookie(),
+					// url: 'getMyWechatMessage?login_id=1027',
 					method: 'get'
 				}, {}).then(res => {
 					console.log(res)
 					if (res.data.code == 200) {
 						this.hudong = res.data.data
 						console.log("获取到的互动消息", this.hudong)
+						for(var i = 0;i<this.hudong.length;i++) {
+							this.message += this.hudong[i].read_count
+						}
+						console.log(this.message)
 					}
 				}, error => {
 					console.log(error);
 				})
-			}
+			},
+			// 从cookie中获取login_id
+			getCookie: function() {
+				var login_id = null
+				if (document.cookie.length > 0) {
+					var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+					for (var i = 0; i < arr.length; i++) {
+						var arr2 = arr[i].split('='); //再次切割
+						//判断查找相对应的值
+						if (arr2[0] == 'login_id') {
+							login_id = arr2[1]
+						}
+					}
+				}
+				return login_id
+			},
 		},
 		created() {
 			this.getHudong()

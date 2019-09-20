@@ -69,10 +69,20 @@
 		onLoad() {
 		},
 		methods: {
-			// 判断未读消息是否两位数,然后根据情况改变样式
-			// 获取红标数字
-			getNumber() {
-				
+			// 从cookie中获取login_id
+			getCookie: function() {
+				var login_id = null
+				if (document.cookie.length > 0) {
+					var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+					for (var i = 0; i < arr.length; i++) {
+						var arr2 = arr[i].split('='); //再次切割
+						//判断查找相对应的值
+						if (arr2[0] == 'login_id') {
+							login_id = arr2[1]
+						}
+					}
+				}
+				return login_id
 			},
 			// 格式化时间
 			pTime(time) {
@@ -81,8 +91,8 @@
 			// 获取我的互动消息
 			getHudong: function() {
 				http.httpTokenRequest({
-					// url:'getMyWechatMessage?login_id='+this.$store.state.login_id,
-					url: 'getMyWechatMessage?login_id=1027',
+					url:'getMyWechatMessage?login_id='+this.getCookie(),
+					// url: 'getMyWechatMessage?login_id=1027',
 					method: 'get'
 				}, {}).then(res => {
 					console.log(res)

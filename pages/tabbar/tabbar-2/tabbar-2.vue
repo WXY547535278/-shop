@@ -1,14 +1,14 @@
 <template>
 	<view class="content">
 		<my-header>
-			<image class="header-back" src="../../../static/img/tabbar/back.png" slot="backImg"></image>
+			<!-- <image class="header-back" src="../../../static/img/tabbar/back.png" slot="backImg"></image> -->
 			<text class="header-title" slot="title">我的订单</text>
 			<view class="header-search" slot="right">
 				<!-- <navigator class="search">
 					<image id="search" src="../../../static/img/tabbar/sousuo.png"></image>
 				</navigator> -->
 				<view class="dots" @click="flag=!flag">
-					<view class="newsNumber">
+					<view class="newsNumber" v-if="showPoint">
 						<!-- {{newsNumber}} -->
 					</view>
 					<text class="dot"></text>
@@ -21,7 +21,7 @@
 						<view class="top_right_info_box_txt">
 							<text>消息</text>
 						</view>
-						<view class="top_right_info_box_txt_tip">
+						<view class="top_right_info_box_txt_tip" v-if="showPoint">
 							<text></text>
 						</view>
 					</view>
@@ -74,7 +74,7 @@
 						共{{item.order_num}}件商品&nbsp;合计：¥{{item.order_price*item.order_num+item.kd_fee}}(含运费¥{{item.kd_fee}})
 					</view>
 					<view class="caozuo">
-						<view class="operation" v-if="arr[0]||arr[1]||arr[2]||arr[3]||arr[4]">联系客服</view>
+						<view class="operation" v-if="arr[0]||arr[1]||arr[2]||arr[3]||arr[4]" @click="toKefu()">联系客服</view>
 						<!-- <view class="operation" v-if="arr[0]">追加评价</view> -->
 						<!-- <view class="operation" v-if="arr[0]||arr[2]||arr[3]||arr[4]">再次购买</view> -->
 						<view class="operation" @click="delOrder(item.order_id)" v-if="arr[0]||arr[4]">删除订单</view>
@@ -118,7 +118,9 @@
 				statu: '',
 				page: 1,
 				size: 4,
-				hasMoreData: true //上拉时是否继续请求数据，即是否还有更多数据
+				hasMoreData: true, //上拉时是否继续请求数据，即是否还有更多数据
+				showPoint: false,
+				count: null
 			}
 		},
 		components: {
@@ -128,6 +130,11 @@
 		updated() {},
 		methods: {
 			// 页面跳转
+			toKefu: function() {
+				uni.navigateTo({
+					url: '/pages/tabbar/tabbar-4/tabbar-4'
+				})
+			},
 			toMessage: function() {
 				uni.navigateTo({
 					url: '/pages/tabbar/tabbar-3/hudong'
@@ -185,6 +192,28 @@
 					}
 				})
 			},
+			// 获取我的互动消息
+			getHudong: function() {
+				http.httpTokenRequest({
+					url: 'getMyWechatMessage?login_id=' + this.$store.state.login_id,
+					// url: 'getMyWechatMessage?login_id=1027',
+					method: 'get'
+				}, {}).then(res => {
+					console.log(res)
+					if (res.data.code == 200) {
+						for (var i = 0; i < res.data.data.length; i++) {
+							this.count += res.data.data[i].read_count
+						}
+						if (this.count > 0) {
+							this.showPoint = true
+						}
+						console.log("获取到的互动消息条数", this.count);
+						console.log("获取到的互动消息", res.data.data)
+					}
+				}, error => {
+					console.log(error);
+				})
+			},
 			//清除所有nav元素激活样式
 			clean(navItem) {
 				for (let i = 0; i < navItem.length; i++) {
@@ -220,8 +249,9 @@
 					title: message,
 				})
 				http.httpTokenRequest({
-					// url:'getMyOrder?login_id='+this.$store.state.login_id+'&status='+this.status + '&page=' + this.page + '&size=' + this.size,
-					url: 'getMyOrder?login_id=1027&status=' + this.status + '&page=' + this.page + '&size=' + this.size,
+					url: 'getMyOrder?login_id=' + this.getCookie() + '&status=' + this.status + '&page=' + this.page +
+						'&size=' + this.size,
+					// url: 'getMyOrder?login_id=1027&status=' + this.status + '&page=' + this.page + '&size=' + this.size,
 					method: 'get'
 				}, {}).then(res => {
 					console.log(res)
@@ -266,10 +296,43 @@
 				}, error => {
 					console.log(error);
 				})
-			}
+			},
+			// 重新登录
+			// login: function() {
+			// 	if (this.$store.state.login_id == '') {
+			// 		uni.showModal({
+			// 			title: '提示',
+			// 			content: '登录过时，请重新登录',
+			// 			success: function(res) {
+			// 				if (res.confirm) {
+			// 					uni.redirectTo({
+			// 						url: '/pages/login/zhanghao'
+			// 					})
+			// 				} else if (res.cancel) {
+			// 					console.log('用户点击取消');
+			// 				}
+			// 			}
+			// 		})
+			// 	}
+			// }
+			
+			// 从cookie中获取login_id
+			getCookie: function() {
+				var login_id = null
+				if (document.cookie.length > 0) {
+					var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+					for (var i = 0; i < arr.length; i++) {
+						var arr2 = arr[i].split('='); //再次切割
+						//判断查找相对应的值
+						if (arr2[0] == 'login_id') {
+							login_id = arr2[1]
+						}
+					}
+				}
+				return login_id
+			},
 		},
 		created() {
-
 			// 定义一个数组保存各类数据的索引
 			this.arr2 = [allItems, daifukuan, daifahuo, daishouhuo, daipingjia];
 			//初始化订单数据
@@ -280,8 +343,10 @@
 		 * 页面相关事件处理函数--监听用户下拉动作
 		 */
 		onLoad: function() {
+			// this.login()
 			// 获取订单列表
 			this.getOrder('正在加载数据...')
+			this.getHudong()
 		},
 		onPullDownRefresh: function() {
 			console.log("下拉")

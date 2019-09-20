@@ -3,31 +3,31 @@
 		<!-- 头部固定栏 -->
 		<view class="content-header">
 			<navigator href="" class="back">
-				<image src="../../../static/img/tabbar/back.png"></image>
+				<!-- <image src="../../../static/img/tabbar/back.png"></image> -->
 			</navigator>
 			<text class="title">专属客服</text>
 		</view>
 		<!-- 客服列表 -->
 		<view class="content-items">
-			<view class="content-item" v-for="(item,index) in items" :key="index">
+			<view class="content-item">
 				<view class="jieshao">
 					<view class="xinxi">
-						<text class="name">{{item.name}}</text>
-						<view>
+						<text class="name">{{kefu.employees_name}}</text>
+						<!-- <view>
 							<view class="wechat tubiao"></view>
-							{{item.wechat}}
-						</view>
+							{{kefu.wechat}}
+						</view> -->
 						<view>
 							<view class="phone tubiao"></view>
-							{{item.phone}}
+							{{kefu.employees_mobile}}
 						</view>
-						<view>
+						<!-- <view>
 							<view class="qq tubiao"></view>
-							{{item.qq}}
-						</view>
+							{{kefu.qq}}
+						</view> -->
 					</view>
 					<view class="pic">
-						<image :src="item.picurl"></image>
+						<image src="../../../static/img/tabbar/pic.jpg"></image>
 					</view>
 				</view>
 				<view class="contact">
@@ -37,9 +37,8 @@
 						</navigator>
 					</view>
 					<view class="call">
-						<navigator url="../../login/duanxin">
-							<image src="../../../static/img/tabbar/phone.png"></image>打电话
-						</navigator>
+						<image src="../../../static/img/tabbar/phone.png"></image>
+						<a :href="'tel:' + kefu.employees_mobile">打电话</a>
 					</view>
 				</view>
 			</view>
@@ -48,23 +47,75 @@
 </template>
 
 <script>
+	import http from '../../../utils/http.js'
 	import {
 		kefuItems
 	} from './config';
 	export default {
 		data() {
 			return {
-				items: kefuItems
+				kefu: null
 			}
 		},
 		onLoad() {
-
+			this.getHudong()
+			// this.login()
 		},
 		methods: {
-
+			// 获取我的专属客服
+			getHudong: function() {
+				http.httpTokenRequest({
+					url: 'getMyExclusiveService?login_id=' + this.getCookie(),
+					// url: 'getMyExclusiveService?login_id=1027',
+					method: 'get'
+				}, {}).then(res => {
+					console.log(res.data)
+					if (res.data.code == 200) {
+						this.kefu = res.data.data
+						console.log("获取到的专属客服消息", this.kefu)
+					}
+				}, error => {
+					console.log(error);
+				})
+			},
+			// 从cookie中获取login_id
+			getCookie: function() {
+				var login_id = null
+				if (document.cookie.length > 0) {
+					var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+					for (var i = 0; i < arr.length; i++) {
+						var arr2 = arr[i].split('='); //再次切割
+						//判断查找相对应的值
+						if (arr2[0] == 'login_id') {
+							login_id = arr2[1]
+						}
+					}
+				}
+				return login_id
+			},
+			// 重新登录
+			// login: function() {
+			// 	if (this.$store.state.login_id == '') {
+			// 		uni.showModal({
+			// 			title: '提示',
+			// 			content: '登录过时，请重新登录',
+			// 			success: function(res) {
+			// 				if (res.confirm) {
+			// 					uni.redirectTo({
+			// 						url: '/pages/login/zhanghao'
+			// 					})
+			// 				} else if (res.cancel) {
+			// 					console.log('用户点击取消');
+			// 				}
+			// 			}
+			// 		})
+			// 	}
+			// }
 		},
 
-		created() {}
+		created() {
+			
+		}
 	}
 </script>
 
@@ -72,6 +123,7 @@
 	page {
 		background-color: #F0F0F0;
 	}
+
 	.content {
 		width: 100%;
 		height: 100%;
@@ -197,6 +249,10 @@
 					.call {
 						margin-right: 140rpx;
 						float: right;
+						a {
+							text-decoration: none;
+							color: #A1A1A1;
+						}
 					}
 				}
 			}

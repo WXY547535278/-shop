@@ -7,20 +7,20 @@
 						<image src="../../../static/img/tabbar/back.png" mode=""></image>
 					</navigator>
 					<image src="../../../static/img/tabbar/pic.png" mode=""></image>
-					<text>已签收</text>
+					<text>{{state}}</text>
 				</view>
 				<view class="top_right">
 					<view class="top_right_tip">
-						<text class="top_right_tip_txt"></text>
+						<text class="top_right_tip_txt" v-if="pointFlag"></text>
 					</view>
-					<text class="top_right_txt" @click="flag=!flag" >...</text>
+					<text class="top_right_txt" @click="flag=!flag">...</text>
 					<view class="top_right_info" v-show="flag">
 						<view class="top_right_info_box" @click="toMessage">
 							<image src="../../../static/img/tabbar/liaotian.png" mode=""></image>
 							<view class="top_right_info_box_txt">
 								<text>消息</text>
 							</view>
-							<view class="top_right_info_box_txt_tip">
+							<view class="top_right_info_box_txt_tip" v-if="pointFlag">
 								<text></text>
 							</view>
 						</view>
@@ -40,135 +40,14 @@
 				</view>
 			</view>
 			<view class="center">
-				<view class="line"></view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date"></view>
-						<view class="center_box_left_time"></view>
+				<view class="center_box" v-for="(item,index) in items" :key="index">
+					<view class="center_time">
+						<text>{{item.time}}</text>
 					</view>
-					<view class="center_box_right">
-						<text class="center_box_right_txt">收</text>
-						<text class="center_box_right_address">【收货地址】广东省东莞市 南城街道 高盛科技园北区C座</text>
+					<view class="center_point">
 					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt">
-							<image src="../../../static/img/tabbar/duigou.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已签收</view>
-							<view class="center_box_right_left_address">广东省东莞市南城白马公司 已签收 签收人：王某某。快件已送达，如有 疑问请联系：13888888888，投诉电话：0769-8</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/paisong.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">派送中</view>
-							<view class="center_box_right_left_address">【东莞市】广东省东莞市南城白马派件员：张某某 电话：13888888888 当前正在为您派件</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">运输中</view>
-							<view class="center_box_right_left_address">广东省东莞市南城白马 已收入</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已揽件</view>
-							<view class="center_box_right_left_address">快件到达 广东省东莞市虎门公司，已揽收</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已发货</view>
-							<view class="center_box_right_left_address">包裹正在等揽收</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">已出库</view>
-							<view class="center_box_right_left_address">包裹已出库</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">仓库处理中</view>
-							<view class="center_box_right_left_address">仓库处理中</view>
-						</view>
-					</view>
-				</view>
-				<view class="center_box">
-					<view class="center_box_left">
-						<view class="center_box_left_date">07-25</view>
-						<view class="center_box_left_time">12:20</view>
-					</view>
-					<view class="center_box_right">
-						<view class="center_box_right_txt" style="background-color: #FFFFFF;">
-							<image src="../../../static/img/tabbar/translate.png" mode=""></image>
-						</view>
-						<view class="center_box_right_left">
-							<view class="center_box_right_left_title">仓库已接单</view>
-							<view class="center_box_right_left_address">仓库已接单</view>
-						</view>
+					<view class="center_info">
+						<text>{{item.context}}</text>
 					</view>
 				</view>
 			</view>
@@ -189,22 +68,43 @@
 	export default {
 		data() {
 			return {
-				items: xihuanShuju,
-				opts:{
-					url: 'getLoginUserByLoginId?login_id=1018',
+				state:'',
+				items: [],
+				opts: {
+					url: 'getCourier?com=zhongtong&num=75171837731899',
 					method: 'get'
 				},
-				param:{},
-				flag:false
+				param: {},
+				flag: false,
+				count: null,
+				pointFlag: false
 			};
 		},
 		components: {
 			MyLike
 		},
 		methods: {
-			getLoginUser() {
-				http.httpRequest(this.opts, this.param).then(res => {
-					console.log(res);
+			getTD() {
+				http.httpTokenRequest(this.opts, {}).then(res => {
+					console.log(res.data);
+					if(res.data.state == 0) {
+						this.state = '在途中'
+					}else if(res.data.state == 1) {
+						this.state = '揽收'
+					}else if(res.data.state == 2) {
+						this.state = '疑难'
+					}else if(res.data.state == 3) {
+						this.state = '签收'
+					}else if(res.data.state == 4) {
+						this.state = '退签'
+					}else if(res.data.state == 5) {
+						this.state = '派件'
+					}else if(res.data.state == 6) {
+						this.state = '退回'
+					}
+					if(res.data.status == 200) {
+					    this.items = res.data.data
+					}
 				}, error => {
 					console.log(error);
 				})
@@ -216,6 +116,30 @@
 				// 	console.log(res[1]);
 				// })
 			},
+			
+			// 获取我的互动消息
+			getHudong: function() {
+				http.httpTokenRequest({
+					url:'getMyWechatMessage?login_id='+this.$store.state.login_id,
+					// url: 'getMyWechatMessage?login_id=1027',
+					method: 'get'
+				}, {}).then(res => {
+					console.log(res)
+					if (res.data.code == 200) {
+						for(var i=0;i<res.data.data.length;i++) {
+							this.count += res.data.data[i].read_count
+						}
+						if(this.count>0) {
+							this.pointFlag = true
+						}
+						console.log("获取到的互动消息条数",this.count);
+						console.log("获取到的互动消息", res.data.data)
+					}
+				}, error => {
+					console.log(error);
+				})
+			},
+			
 			// 页面跳转
 			toMessage: function() {
 				uni.navigateTo({
@@ -234,8 +158,9 @@
 			}
 		},
 		mounted() {
-			console.log("123");
-			this.getLoginUser()
+			console.log("123")
+			this.getTD()
+			this.getHudong()
 		}
 	}
 </script>
@@ -368,78 +293,47 @@
 			}
 
 			.center {
-				height: 1300rpx;
 				width: 720rpx;
 				background-color: #FFFFFF;
 				border-radius: 16rpx;
 				margin: 30rpx auto;
 				box-sizing: border-box;
-				padding-top: 20rpx;
-
+				padding-top: 40rpx;
+				min-height: 1300rpx;
 				&_box {
-					width: 100%;
-					margin-top: 60rpx;
 					display: flex;
 					justify-content: flex-start;
+					margin-top: 70rpx;
+				}
+				&_box:first-child {
+					display: flex;
+					justify-content: flex-start;
+					margin-top: 10rpx;
+				}
+				&_time {
+					width: 200rpx;
+					height: 100rpx;
+					box-sizing: border-box;
+					padding-top: 20rpx;
+					padding-left: 30rpx;
+					color: #797979;
+				}
 
-					&_left {
-						margin-left: 30rpx;
-						margin-right: 10rpx;
+				&_info {
+					width: 500rpx;
+					height: 150rpx;
+					box-sizing: border-box;
+					padding-top: 10rpx;
+					padding-left: 20rpx;
+					font-weight: 400;
+				}
 
-						&_date {
-							font-size: 16rpx;
-							color: #797979;
-						}
-
-						&_time {
-							font-size: 12rpx;
-							color: #797979;
-						}
-					}
-
-					&_right {
-						display: flex;
-						justify-conten: space-between;
-
-						&_txt {
-							display: inline-block;
-							width: 50rpx;
-							height: 50rpx;
-							background-color: #FF4302;
-							border: 2rpx solid #C8C7CC;
-							border-radius: 50%;
-							color: #FFFFFF;
-							font-size: 24rpx;
-							line-height: 50rpx;
-							text-align: center;
-
-							image {
-								width: 24rpx;
-								height: 20rpx;
-							}
-						}
-
-						&_address {
-							font-size: 16rpx;
-							width: 500rpx;
-							margin-left: 20rpx;
-							margin-top: 10rpx;
-						}
-
-						&_left {
-							margin-left: 20rpx;
-
-							&_title {
-								font-weight: 800;
-							}
-
-							&_address {
-								font-size: 16rpx;
-								width: 500rpx;
-							}
-						}
-
-					}
+				&_point {
+					margin-top: 20rpx;
+					width: 8rpx;
+					height: 20rpx;
+					// border-radius: 50%;
+					background-color: #FF4302;
 				}
 			}
 		}
